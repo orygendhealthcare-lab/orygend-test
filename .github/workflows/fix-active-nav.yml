@@ -1,0 +1,50 @@
+name: Fix active navigation
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply simple active-page indicator
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          css = '''<style id="active-nav-v2">
+          .navbar .nav-link.active{background:var(--navy) !important;color:#fff !important;border-radius:6px !important;font-weight:700 !important;}
+          .navbar .nav-link.active:hover{background:var(--navy-2) !important;color:#fff !important;}
+          </style>'''
+          js = '''<script id="active-nav-script-v2">
+          document.addEventListener('DOMContentLoaded', function(){
+            var page=(location.pathname.split('/').pop()||'index.html').toLowerCase();
+            if(page==='') page='index.html';
+            document.querySelectorAll('.navbar .nav-link').forEach(function(a){
+              var h=(a.getAttribute('href')||'').split('#')[0].split('?')[0];
+              var target=(h.split('/').pop()||'index.html').toLowerCase();
+              if(target==='') target='index.html';
+              if(target===page){a.classList.add('active');a.setAttribute('aria-current','page');}
+              else {a.classList.remove('active');a.removeAttribute('aria-current');}
+            });
+          });
+          </script>'''
+          for p in Path('.').glob('*.html'):
+            s=p.read_text(encoding='utf-8')
+            if 'id="active-nav-v2"' not in s:
+              s=s.replace('</head>',css+'\n</head>',1)
+            if 'id="active-nav-script-v2"' not in s:
+              s=s.replace('</body>',js+'\n</body>',1)
+            p.write_text(s,encoding='utf-8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add '*.html'
+          if ! git diff --cached --quiet; then
+            git commit -m 'Fix active navigation indicator [skip ci]'
+            git push
+          fi
