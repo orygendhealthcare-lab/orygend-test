@@ -1,0 +1,47 @@
+name: Remove FAQ from top navigation
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  fix-navbar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Remove FAQ only from navigation bars
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          pattern = re.compile(r'<li\s+class=["\']nav-item["\']>\s*<a\s+class=["\']nav-link[^"\']*["\']\s+href=["\'](?:faq\.html|#faq)["\'][^>]*>\s*FAQ\s*</a>\s*</li>', re.I)
+
+          changed = False
+          for path in Path('.').glob('*.html'):
+              text = path.read_text(encoding='utf-8')
+              new_text = pattern.sub('', text)
+              if new_text != text:
+                  path.write_text(new_text, encoding='utf-8')
+                  changed = True
+
+          if not changed:
+              print('No FAQ navigation items found; nothing to change.')
+          PY
+
+      - name: Commit navigation fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add '*.html'
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Remove FAQ from top navigation on all pages"
+            git push
+          fi
