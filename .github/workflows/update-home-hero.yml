@@ -1,0 +1,31 @@
+name: Update home hero image
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Point home hero to supplied image filename and increase height
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace("url('assets/hero-equipment.webp')", "url('assets/home-hero.jpg')")
+          s=s.replace("min-height:clamp(520px,72vh,780px)", "min-height:clamp(600px,78vh,860px)")
+          p.write_text(s, encoding='utf-8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- index.html
+          if ! git diff --cached --quiet; then
+            git commit -m 'Use new home hero image and increase hero height [skip ci]'
+            git push
+          fi
