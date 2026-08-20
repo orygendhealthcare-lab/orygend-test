@@ -1,45 +1,51 @@
-name: Apply simple light navbar style
+name: Force simple light active navbar
 on:
   push:
     branches: [main]
 
 jobs:
   navbar:
-    if: ${{ !startsWith(github.event.head_commit.message, 'Apply simple light navbar style') }}
+    if: ${{ !startsWith(github.event.head_commit.message, 'FORCE-NAVBAR') }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - name: Apply navbar override to requested pages
+      - name: Apply active gold line to requested pages
+        shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
           files = ['index.html','services.html','board-repair.html','coverage.html','contact.html']
-          css = '''
-  /* Simple light navbar: active page shown only by a thin gold line */
-  .navbar{background:var(--surface)!important;border-bottom:1px solid var(--border)!important;}
-  .nav-link{position:relative;color:var(--text)!important;font-weight:500!important;background:transparent!important;box-shadow:none!important;}
-  .nav-link:hover{color:var(--blue)!important;background:transparent!important;box-shadow:none!important;}
-  .nav-link.active{color:var(--text)!important;font-weight:500!important;background:transparent!important;box-shadow:none!important;}
-  .nav-link.active::after{content:"";position:absolute;left:.75rem;right:.75rem;bottom:.15rem;height:2px;background:var(--amber);border-radius:2px;}
-  @media(max-width:991.98px){.nav-link.active::after{left:.5rem;right:auto;width:2.2rem;bottom:.2rem;}}
+          css = r'''
+  /* FORCE-NAVBAR: simple light navbar with thin gold active-page line */
+  .navbar .nav-link{position:relative!important;background:transparent!important;color:var(--text)!important;box-shadow:none!important;font-weight:500!important;}
+  .navbar .nav-link:hover{background:transparent!important;color:var(--blue)!important;box-shadow:none!important;}
+  .navbar .nav-link.active{position:relative!important;background:transparent!important;color:var(--text)!important;box-shadow:none!important;font-weight:500!important;}
+  .navbar .nav-link.active::after{content:""!important;display:block!important;position:absolute!important;left:0.75rem!important;right:0.75rem!important;bottom:0.05rem!important;height:2px!important;width:auto!important;background:var(--amber)!important;border-radius:2px!important;}
+  @media(max-width:991.98px){.navbar .nav-link.active::after{left:.5rem!important;right:auto!important;width:2.4rem!important;bottom:.15rem!important;}}
+  @media(min-width:992px){.navbar .nav-link.active::after{left:.5rem!important;right:.5rem!important;}}
 '''
           for name in files:
               p=Path(name)
               s=p.read_text(encoding='utf-8')
-              if 'Simple light navbar: active page shown only by a thin gold line' in s:
+              if 'FORCE-NAVBAR: simple light navbar' in s:
                   continue
+              # Put the override before the first closing style tag.
               pos=s.find('</style>')
-              if pos==-1:
-                  raise SystemExit(f'No style block found in {name}')
+              if pos < 0:
+                  raise SystemExit(f'No style tag in {name}')
               s=s[:pos]+css+s[pos:]
               p.write_text(s,encoding='utf-8')
           PY
-      - name: Commit changes
+      - name: Commit HTML changes
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html services.html board-repair.html coverage.html contact.html
-          git diff --cached --quiet || git commit -m 'Apply simple light navbar style'
-          git push
+          if git diff --cached --quiet; then
+            echo 'No HTML changes needed'
+          else
+            git commit -m 'FORCE-NAVBAR apply thin gold active page line'
+            git push
+          fi
