@@ -1,0 +1,32 @@
+name: Update hero image
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  update-hero:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install optimized hero image
+        run: |
+          mkdir -p assets
+          echo 'UklGRjgOAABXRUJQVlA4ICwOAADwSwCdASrwAIAAPyWAtVUuJ6Soq3ZcwcAkiWUA0Cn47lOWUG8hZiFfuWdn0gdP/htrG1oQsK6/4M0t6Z2Rfe7iffGu5UTb737xNv4OhvcuQS4bWKCkM/UBikQvPjUzDPk2DADy9O+NuvmOeY2v/6YE/WmcaUdlUH5Rvrs4diNYFovB/BmxAI2gpz+nrunkher02kVIA+9UhCdN19uyxf5NXrG3ao2wGMqfC4pTMfn33iVS1AQXq8MXmaTxBBVbpMtLENl+ttkAmNF/Bvvn+UylFNGlirARGuBMrozOztEWrKADx3Gjf8dGXq3Vs4K6MYZtfyitHWfDOC3ft4r2K6T77iBRDjgoSMUw9R7vN5ql0n8sDI1zjHTET2jW7T0XheK7dFkVNGGiWxmmRWtmDhWJM3WzngCHfbF07yOhtlcmWdF4zi4Ki9YFeO+CpT9PpAOCya+Rn9PQx9heglJ+ttuC6+1IcoZpH25+meQYm8tsxtvi8/p/Txos5v8QzxYL6SAHVETj8LF0VGDXov+BToJTx6gCMrW2N4eyMskodlTofvrv6bO+/gwv/Xw5HQ7vdB5JK3N0MVd+tYt+jMlIeBZK2NgPiMVs++/Is2053LQcbE2hUSY7RVFP3Qg9B85d6ncUuqNQwRywsxNMDeLRQUe1ugRC8QqJ67t5nfvNVz17sEKuGQhDZ4AHalypg0wG7oInXqikkJ+2VSX3BYDJJB09i5Ai7pQ3e7lGOAHAkSRVXHIwu6BEwJfs65W+OwHsNEQ6pRECLISxyGlx8cvEg5mfilbP/rP+4LwbXWau723C1kdzJFEvUjQAAP75DWhhpoETICdDJd3+F0RgN5H6zPuFclrkP6g3+BArZFCxOPkPT/m1WouZ24PHYt0cKoxpOyD4nWsBl0ww+GJb0SgIJZhYXzx7MJ23xwYyRzgM99GGYWXZ/Zr0h9wCBDSYLR/SDln/pNnrQF7GTentaPHb0RKWwMyz5jgWpIyiEXlPzv2EkAtHBWSF8dsAqT9dcPkLvOhW4nzfr46WE7AMO/ZC8rz7rhKLVI1rTeCFxsmarA/K+V3COfuNUNPyxrJ2bWKqZ7rm5McSV3ptVNesG1JLdu0Qq/dl5D7ErhPekaoWTVKZmvim1c5luSJOt5TCDou7V30HQZG5uhlvYvvl7Gr7Qw1xQMWhA0KAZvWpkVPPwCGtAv4JLN7tGD+1PWCTk8hO++upg88NRREPsrLZVZgNlnUNpTVOkQQbqgcQJP9ZQIGXLVy/yrOlzpsDqrVBa3+D12IsEAAseF6CgX3/5JJFh72O+0NsGopSdeF9UsFh8da714MLtAuvzISCrYdXqZVCxiN9GMR29qjMgQDMGqgZ/qd1lnXpnZbfoUc62FqlflNKpYQU7RvyIyDMy12fzIm/iQy+8mDkgNAnn2bQYRD2CQGnXjangb0om8jcE1UzBg8pAJ6ky5a8M5KFHl9Ity35StndDXspfq1UOQACiPv3n8/9fKNuShBXz+ueRzCJnJ4KY819+x4vQd7fpSj6YNX667AAp9gHAvbGEq6QpmJYlX3yQWJCd2GONz9xIGe8Bjljic6NiCJ482wbuKh8I9MYVeuDxjOKdFeGiBqzje6jbnuaDYkSOI9wxa1cxTyfZGGCvTp4hxBKwsvgbeHSXTOnERdZ1R5c/OAfoyLespOn/zun4wd8feA9fPyG9QnIMIP3tyK4152ZwY0b5/v/uxAaq9of9iIX61r02CWR02QKrBGfTRut2u3swL92nDGySEkYGSsrTkZ7/UFhN5qzVy2b+N/oXVe/mraA8U4fb9BJAd2SI5p2Vk/7rAVnPsJTmMu24KhJwF+DPTXMdKHFE8Ne1wsKYbgpcWOllo35qzChDMwgkH54ooe3Z38TKbRRMpPtVDa1091YxeIVFaa7K9SCg5eFs/gqmeG4G/q1nn6/qSVhqbAGsUT4pA3pRi+TS0QuqJKm1N632nlvSFuEWKKa5imp2Z882wCiDjr9a0Kl9ZoL5TPB1LdeKdogZboVtDku6icUZkiKUf48o7+NzzjLBst6GvomjryJdxL/hKl/0GJhZM0j+3we/1xIurgYFbVtTqtSL+n8XYKM0KzE+wF1SG39UcbRi52eVvgt/kDg6bfHANiCd9jePNptmRUEbOnOgAuG/I2U+tKbVUhbJ9qSUFxV/HgJeQ4QtY9wQ/6+PwDy7IHJhM5BopUlfyALgmgQNjyICEG5emj8qX+j+4iO3oPuySF6+2t+HScwzv/wuQ9y6igM0Xa74bXF1cdDkDG6NUpbzeDQTWAAZ3Onf9NHgGdkcOQVn7KJ2YSHwj/K4/IDOwM0L4KXScNbmqDtJgdov6GEE2SSKuSZyx/J7Hlgn8C5u4JbGbzndxF1uyoDmuZTaPzlKlq8tekM42NbsuGPG5SuU0zKCrhCOw6YkS8UcmmFG2uYyyCOMF9dzDce5HVXksQLCnjpixILzsLHpfzBLVKITt47fNLGScFAaSaGV7smsRxCtcCTHEr7XVpH8lVmUIL+mihwTZfkBKK+AF8HTADOd8Au8J0M7VY/kT80egsAKeCDC7X9NtNE+eEumeufiiYFNFYwjotKkkCf7x2geKvvXWW62wtthSlQ5bOtIQ62oCj6JEEyvpFjL/oMz4mF2N43VqFLJGwLJxn6foOdIq7DVoSAvBMrTzDrss5PIzqtV5Ef50Pb936U2IrQaiD/oltNzLUS0r3F8Ma+HsVvu2LwI3MjEKn3ciFb0+BjG6AHE6IBZZ3fg1iti64/zc368MpbjNZv0g+RO3lkYjHRq8YmjiAWpGh5Eiopz454Q1ZwE6Z+ooTeczCw25N3hdruOEDRD8Ydi9WSPIcmQuJ1LiXtdPvWh1iKpF1SEzb34iF9aoL6K+q3GWkYNR8ALqYT7Bc3mL558jlyyoj1U32iMF2Z7s0Eh1D8NQc1fa4sWqJpc7cWATdm7XOCnU4/W0EwRB0L/lcOUSbqK6lRSkRo2Sve3lp90qApdhaEUIEje8+oWBabppjvdOrbZt7vw4cd2eBNcuVRbNw7kxG8n1PeIKyPob5r6/OUa75zA+3iKxsXUnIm3Tlyn/amg033p8E7yhHH3lEi+TKeEw+Z75TizbdO0iB8ws6a1SPC6wULAzscb4mNEeRVkBf8GpHX4sP8wNIk1o+t+041+3HdcaTJ4ME3cQ0/jv7Ab7xe2i+tx/QR07cwkZOcj97kJlWyI7auaKNn5DeqEnbPXKwwWX7/VAwXAEIuQMpb4nm1udLpNLzQrDG/09vlFBANz+HjhZZ86zkVXo3kc1eOJlH/xUN9kIczAYC44AumAf1NZE2ySZ9X8GylU954QTbIYSUXi4+nzWggpxtnnVppj7ytTmvwuq1exp7XXqERbHYl3XVNDdXB0HGrzmeQLZNBp2FpQWe9gRTZlMpt+/8iUqijsroVKpZ+RQUERNxWx2RqCoiybKeu6TGCRHBx78KW4BNApSSNcytm1HfovM959Ufyyqfr2ZMWmjGoHDPky+lRHvdNCVPqdYyp8Ngcy3RQ2lQsOTIvwnXQOEOnl3tVoEV0azXBEXzuvZhocWy/4ooLXaxwV8q2WABZnGu4OMmCctsds8fPxBpktGkRHVUYbt7tF2vMqByUOO5O0R/EwiipKPj/i5wI3MuHV3rGUKm0cf93JlrgqD4VD2dbvCux+fG1Fvgrbb761ToiLP7MQBoIO3RjxQS3IeuffZiETvwy4MGCc/kvDjX4rxfh+oN3vtRHaNNJHBn8FCKftPR0j68T+PLSRHJst6AvFE4oMJLyKdDKBquyZ3nl6znQ2Snj3sEkeocLguLqTzP5Inmiy5bUkwQTdtK1A+cQc1rgvQjIrzqJTcxq4xsWqGNSkET5QDR4QpJBFwbFRzZiUR3nOp8rAWejvAa7e+UPsldWOt0jGFMFoPc6lvRb92XqmNkHxqOsP1LOsZPNdUozGhfLDpb7UvL6tNJ1/0eP1coDufr7BUMCbisrej5g0LQsI75kTOQGQEmJ6v297YUmFOiI8er3kd4Zz00RkcWp5ZnUu8WIKwQVKYeRyLPCfzCGRsvT6krnrwjMNnGSjAjyFOVoGrxygg66JHrZBQkImTILKC5jqoggOe0A8kY1eFtuqypKc8akmfet4Pf+3rhoD5xe1rGc7zO47QwshcPMU8QA5l6bcGMPchGfnB6u936wetTcvirOQpmOeTYpWJF8JMAjVQEF9pNCEoEdw5H9EDlFC/IWParryk0wrrwEk8n3HZtqjV88JdYH88vQi8HuEo3+H3O0DvJO/saHbOSKfOBsUyJ9aRkvjnCgFna7P9V5zVhI8oG8XCKz3R4FcPkdzT4W9n53i/hT/oAMTyDshvSD/CV3WBCqDNJxX0jMfIZXlfSs+QVl8NQfgrmEJY/8gH2Kr2jmezXvx7rMndI/D3uKoQBivIdzKvCuiX7tC/N210qrQbDoup8NnmFYsBe6sZwZ17OY4iOVD2nMaZ1ce7Sk+HczT2U1oZ6pMDCbQ11J/ljRn8DdtCaSiUZ32Yti2UcuR/Q6yOeYxTkcrutAE+O/ZkOfTco/JocEeMqYUhckpFTojFFgX5pb7XA+cDPrR82n+WZp3xZdnvbymyLALtJx8YBAv2ey20X3rBlhogtbEAs9Xgcx8g5jz/TXQsiSfwPAiBlyIU3HFHsmsDBRELbmTbbcRaD+lTCCs611nhejJHhliuiuXIlAlqzH7lw/HExf7D9k2eIpMkKULiitOystug8LILOlbcHxt9eeo0C7CCFjfOjL17K9tZj5U3FNxz51SqoZAGAsgNMs8QcbnGVWPHp/Ddw8hfpgYI/f2dJWX3C+9QAA' | base64 -d > assets/hero-equipment.webp
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace("url('assets/hero-page-composite.png')", "url('assets/hero-equipment.webp')")
+          p.write_text(s,encoding='utf-8')
+          PY
+          rm -f assets/hero-equipment.svg
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html assets/hero-equipment.webp assets/hero-equipment.svg
+          git commit -m 'Use optimized equipment image in homepage hero'
+          git push
