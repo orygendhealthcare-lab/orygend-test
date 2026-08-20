@@ -1,0 +1,45 @@
+name: Apply simple light navbar style
+on:
+  push:
+    branches: [main]
+
+jobs:
+  navbar:
+    if: ${{ !startsWith(github.event.head_commit.message, 'Apply simple light navbar style') }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply navbar override to requested pages
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          files = ['index.html','services.html','board-repair.html','coverage.html','contact.html']
+          css = '''
+  /* Simple light navbar: active page shown only by a thin gold line */
+  .navbar{background:var(--surface)!important;border-bottom:1px solid var(--border)!important;}
+  .nav-link{position:relative;color:var(--text)!important;font-weight:500!important;background:transparent!important;box-shadow:none!important;}
+  .nav-link:hover{color:var(--blue)!important;background:transparent!important;box-shadow:none!important;}
+  .nav-link.active{color:var(--text)!important;font-weight:500!important;background:transparent!important;box-shadow:none!important;}
+  .nav-link.active::after{content:"";position:absolute;left:.75rem;right:.75rem;bottom:.15rem;height:2px;background:var(--amber);border-radius:2px;}
+  @media(max-width:991.98px){.nav-link.active::after{left:.5rem;right:auto;width:2.2rem;bottom:.2rem;}}
+'''
+          for name in files:
+              p=Path(name)
+              s=p.read_text(encoding='utf-8')
+              if 'Simple light navbar: active page shown only by a thin gold line' in s:
+                  continue
+              pos=s.find('</style>')
+              if pos==-1:
+                  raise SystemExit(f'No style block found in {name}')
+              s=s[:pos]+css+s[pos:]
+              p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html services.html board-repair.html coverage.html contact.html
+          git diff --cached --quiet || git commit -m 'Apply simple light navbar style'
+          git push
