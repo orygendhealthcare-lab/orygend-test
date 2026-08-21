@@ -227,6 +227,13 @@
   .navbar .btn-amber{margin-top:.5rem!important;width:100%!important}
 }
 </style>
+<style id="nav-active-highlight">
+.navbar .nav-link{position:relative;margin:0 .12rem;padding:.55rem .75rem !important;border:1px solid transparent;border-radius:7px;transition:background-color .2s ease,color .2s ease,border-color .2s ease,box-shadow .2s ease;}
+.navbar .nav-link:hover{background:#f7f0e7;color:var(--amber-dark) !important;border-color:#ead9c3;}
+.navbar .nav-link.active{background:#f7f0e7;color:var(--amber-dark) !important;border-color:#ead9c3;font-weight:700;box-shadow:inset 0 -2px 0 var(--amber);}
+.navbar .nav-link.active::after{content:'';position:absolute;left:50%;bottom:3px;width:18px;height:2px;transform:translateX(-50%);background:var(--amber);border-radius:2px;}
+@media(max-width:991.98px){.navbar .nav-link{margin:.12rem 0;}.navbar .nav-link.active::after{left:.75rem;transform:none;width:18px;}}
+</style>
 </head>
 <body>
 <div class="info-bar">
@@ -332,5 +339,19 @@
   <svg viewBox="0 0 32 32" fill="currentColor"><path d="M16.001 3C9.373 3 4 8.373 4 15c0 2.386.7 4.607 1.907 6.473L4 29l7.72-1.867A11.94 11.94 0 0 0 16.001 27C22.628 27 28 21.627 28 15S22.628 3 16.001 3zm0 21.818a9.78 9.78 0 0 1-4.99-1.365l-.358-.213-4.583 1.108 1.127-4.47-.234-.367A9.77 9.77 0 0 1 5.909 15c0-5.57 4.522-10.09 10.092-10.09S26.093 9.43 26.093 15 21.572 24.818 16.001 24.818zm5.55-7.55c-.304-.152-1.797-.887-2.076-.988-.279-.101-.482-.152-.685.152-.203.304-.786.988-.964 1.19-.177.203-.355.228-.658.076-.304-.152-1.283-.473-2.444-1.51-.903-.806-1.513-1.8-1.69-2.104-.178-.304-.019-.468.133-.62.137-.136.304-.355.456-.532.152-.178.203-.304.304-.507.101-.203.05-.38-.025-.532-.076-.152-.685-1.652-.939-2.263-.247-.594-.499-.514-.685-.524-.177-.009-.38-.011-.583-.011-.203 0-.532.076-.81.38-.279.304-1.064 1.04-1.064 2.54 0 1.5 1.09 2.948 1.242 3.15.152.203 2.146 3.277 5.2 4.594.727.314 1.294.501 1.737.641.729.232 1.393.199 1.918.121.585-.087 1.797-.735 2.05-1.444.254-.71.254-1.317.178-1.444-.076-.127-.279-.203-.583-.355z"/></svg>
 </a>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script id="nav-active-script">
+document.addEventListener('DOMContentLoaded', function () {
+  const current = (window.location.pathname.split('/').pop() || 'index.html').toLowerCase();
+  document.querySelectorAll('.navbar .nav-link').forEach(function (link) {
+    const href = (link.getAttribute('href') || '').split('#')[0].split('?')[0];
+    const target = (href.split('/').pop() || 'index.html').toLowerCase();
+    const isHome = (current === '' || current === 'index.html') && (target === '' || target === 'index.html');
+    if (isHome || target === current) {
+      link.classList.add('active');
+      link.setAttribute('aria-current', 'page');
+    }
+  });
+});
+</script>
 </body>
 </html>
