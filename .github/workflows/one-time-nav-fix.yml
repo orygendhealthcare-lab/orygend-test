@@ -1,0 +1,104 @@
+name: One-time navigation underline fix
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Normalize every page navbar
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+
+          final_css = '''<style id="nav-active-final">
+          .navbar .nav-link.active,
+          .navbar .nav-link.active:hover,
+          .navbar .nav-link.active:focus,
+          .navbar .nav-link.active:focus-visible {
+            background: transparent !important;
+            background-color: transparent !important;
+            color: var(--text) !important;
+            border: 0 !important;
+            border-color: transparent !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            outline: none !important;
+            text-shadow: none !important;
+            font-weight: 500 !important;
+          }
+          .navbar .nav-link.active::before { content: none !important; display: none !important; }
+          .navbar .nav-link.active::after {
+            content: "" !important;
+            display: block !important;
+            position: absolute !important;
+            left: 50% !important;
+            bottom: 0 !important;
+            top: auto !important;
+            right: auto !important;
+            width: 24px !important;
+            height: 2px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            transform: translateX(-50%) !important;
+            background: var(--amber) !important;
+            border: 0 !important;
+            border-radius: 2px !important;
+            box-shadow: none !important;
+          }
+          @media (max-width: 991.98px) {
+            .navbar .nav-link.active::after {
+              left: 0 !important;
+              bottom: 0 !important;
+              top: auto !important;
+              width: 24px !important;
+              height: 2px !important;
+              transform: none !important;
+            }
+          }
+          </style>'''
+
+          for path in Path('.').glob('*.html'):
+              text = path.read_text(encoding='utf-8')
+
+              # Remove only the extra navigation-active style blocks added by previous attempts.
+              def remove_nav_style(match):
+                  opening, body = match.group(1), match.group(2)
+                  ident = opening.lower()
+                  if ('nav-active' in ident or 'active-nav' in ident or
+                      '.navbar .nav-link.active' in body or
+                      '#navmenu .nav-link.active' in body):
+                      return ''
+                  return match.group(0)
+
+              text = re.sub(r'<style([^>]*)>([\s\S]*?)</style>', remove_nav_style, text, flags=re.I)
+
+              # Neutralize the original single active rule in the main stylesheet.
+              text = re.sub(
+                  r'\.nav-link\.active\{[^{}]*\}',
+                  '.nav-link.active{color:var(--text)!important;font-weight:500!important;}',
+                  text,
+                  flags=re.I,
+              )
+
+              # Add exactly one final active-state style before </head>.
+              text = text.replace('</head>', final_css + '\n</head>', 1)
+              path.write_text(text, encoding='utf-8')
+
+      - name: Commit and remove this one-time workflow
+        shell: bash
+        run: |
+          rm -f .github/workflows/one-time-nav-fix.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add '*.html' .github/workflows/one-time-nav-fix.yml
+          git commit -m "Fix navigation active state consistently [skip ci]"
+          git push
