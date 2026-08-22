@@ -1,0 +1,73 @@
+name: Replace Orygend text logo
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  replace-logo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Replace navbar and footer brand text with PNG logo
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          files = [
+              "index.html",
+              "board-repair.html",
+              "contact.html",
+              "coverage.html",
+              "equipment.html",
+              "faq.html",
+              "services.html",
+          ]
+
+          logo = '<img src="assets/orygend-logo.png" alt="Orygend Healthcare" class="brand-logo">'
+          css = '.brand-logo{height:42px;width:auto;display:block;object-fit:contain;}'
+
+          for name in files:
+              p = Path(name)
+              s = p.read_text(encoding="utf-8")
+
+              # Navbar: replace only the contents of .navbar-brand links.
+              s = re.sub(
+                  r'(<a\b[^>]*class=["\'][^"\']*navbar-brand[^"\']*["\'][^>]*>).*?(</a>)',
+                  lambda m: m.group(1) + logo + m.group(2),
+                  s,
+                  flags=re.I | re.S,
+              )
+
+              # Footer: replace the Orygend Healthcare brand link/text inside <footer> only.
+              def footer_replace(match):
+                  footer = match.group(0)
+                  footer = re.sub(
+                      r'(<a\b[^>]*>)(?:(?!</a>).)*?Orygend Healthcare(?:(?!</a>).)*?(</a>)',
+                      lambda m: m.group(1) + logo + m.group(2),
+                      footer,
+                      flags=re.I | re.S,
+                  )
+                  return footer
+
+              s = re.sub(r'<footer\b[\s\S]*?</footer>', footer_replace, s, flags=re.I)
+
+              # Add shared logo sizing once if it is not already present.
+              if '.brand-logo{' not in s:
+                  s = s.replace('</style>', css + '</style>', 1)
+
+              p.write_text(s, encoding="utf-8")
+          PY
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html board-repair.html contact.html coverage.html equipment.html faq.html services.html
+          if ! git diff --cached --quiet; then
+            git commit -m "Replace navbar and footer text logo with PNG"
+            git push
+          fi
