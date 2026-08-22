@@ -252,6 +252,13 @@
   }
 }
 </style>
+<style id="nav-active-highlight">
+.navbar .nav-link{position:relative;margin:0 .12rem;padding:.55rem .75rem !important;border:1px solid transparent;border-radius:7px;transition:background-color .2s ease,color .2s ease,border-color .2s ease,box-shadow .2s ease;}
+.navbar .nav-link:hover{background:#f7f0e7;color:var(--amber-dark) !important;border-color:#ead9c3;}
+.navbar .nav-link.active{background:#f7f0e7;color:var(--amber-dark) !important;border-color:#ead9c3;font-weight:700;box-shadow:inset 0 -2px 0 var(--amber);}
+.navbar .nav-link.active::after{content:'';position:absolute;left:50%;bottom:3px;width:18px;height:2px;transform:translateX(-50%);background:var(--amber);border-radius:2px;}
+@media(max-width:991.98px){.navbar .nav-link{margin:.12rem 0;}.navbar .nav-link.active::after{left:.75rem;transform:none;width:18px;}}
+</style>
 </head>
 <body>
 <div class="info-bar">
