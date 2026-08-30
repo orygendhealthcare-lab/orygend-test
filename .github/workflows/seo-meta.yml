@@ -1,0 +1,90 @@
+name: Add SEO metadata
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  seo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out site
+        uses: actions/checkout@v4
+
+      - name: Add canonical, social metadata and structured data
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          import re
+
+          pages = {
+              'index.html': ('Orygend Healthcare | Biomedical Equipment Service & Repair', 'Biomedical equipment service, preventive maintenance, AMC/CMC, breakdown support and board-level repair for hospitals and clinics across India.'),
+              'services.html': ('Biomedical Equipment Services | Orygend Healthcare', 'Biomedical equipment preventive maintenance, AMC/CMC, breakdown support, board-level repair and outsourced biomedical engineering services for hospitals and clinics.'),
+              'equipment.html': ('Medical Equipment We Service | Orygend Healthcare', 'Biomedical equipment service and repair for patient monitors, electrosurgical units, endoscopy, respiratory and imaging equipment from leading medical equipment brands.'),
+              'board-repair.html': ('Medical Equipment Board Repair | Orygend Healthcare', 'Component-level PCB and control-board troubleshooting and repair for biomedical and medical equipment, helping hospitals reduce downtime and replacement costs.'),
+              'coverage.html': ('Biomedical Equipment Service Coverage | Orygend Healthcare', 'Biomedical equipment service coverage from Bangalore with pan-India courier-supported repair and field service coordination for hospitals and clinics.'),
+              'faq.html': ('FAQ | Biomedical Equipment Service | Orygend Healthcare', 'Answers about biomedical equipment AMC/CMC, preventive maintenance, breakdown support, board-level repair, response times and supported brands.'),
+              'contact.html': ('Contact Orygend Healthcare | Biomedical Equipment Service', 'Contact Orygend Healthcare for biomedical equipment maintenance, AMC/CMC, breakdown support, board-level repair, training and service enquiries.'),
+          }
+
+          for filename, (title, description) in pages.items():
+              path = Path(filename)
+              if not path.exists():
+                  continue
+              html = path.read_text(encoding='utf-8')
+              canonical = 'https://orygend.com/' if filename == 'index.html' else f'https://orygend.com/{filename}'
+
+              html = re.sub(r'<title>.*?</title>', f'<title>{title}</title>', html, count=1, flags=re.I|re.S)
+              if re.search(r'<meta[^>]+name=["\']description["\']', html, re.I):
+                  html = re.sub(r'<meta[^>]+name=["\']description["\'][^>]*>', f'<meta name="description" content="{description}">', html, count=1, flags=re.I|re.S)
+              else:
+                  html = html.replace('</head>', f'<meta name="description" content="{description}">\n</head>', 1)
+
+              tags = [
+                  f'<link rel="canonical" href="{canonical}">',
+                  '<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">',
+                  f'<meta property="og:type" content="website">',
+                  f'<meta property="og:title" content="{title}">',
+                  f'<meta property="og:description" content="{description}">',
+                  f'<meta property="og:url" content="{canonical}">',
+                  '<meta property="og:site_name" content="Orygend Healthcare">',
+                  '<meta name="twitter:card" content="summary">',
+                  f'<meta name="twitter:title" content="{title}">',
+                  f'<meta name="twitter:description" content="{description}">',
+              ]
+
+              for tag in tags:
+                  key = tag.split(' content=')[0].split(' href=')[0].split('>')[0]
+                  if not ((key.startswith('<link rel="canonical"') and 'rel="canonical"' in html) or
+                          (key.startswith('<meta name="robots"') and 'name="robots"' in html) or
+                          (key.startswith('<meta property="og:type"') and 'property="og:type"' in html) or
+                          (key.startswith('<meta property="og:title"') and 'property="og:title"' in html) or
+                          (key.startswith('<meta property="og:description"') and 'property="og:description"' in html) or
+                          (key.startswith('<meta property="og:url"') and 'property="og:url"' in html) or
+                          (key.startswith('<meta property="og:site_name"') and 'property="og:site_name"' in html) or
+                          (key.startswith('<meta name="twitter:card"') and 'name="twitter:card"' in html) or
+                          (key.startswith('<meta name="twitter:title"') and 'name="twitter:title"' in html) or
+                          (key.startswith('<meta name="twitter:description"') and 'name="twitter:description"' in html)):
+                      html = html.replace('</head>', tag + '\n</head>', 1)
+
+              if 'application/ld+json' not in html:
+                  schema = f'''<script type="application/ld+json">{{"@context":"https://schema.org","@type":"Organization","name":"Orygend Healthcare","url":"https://orygend.com/","email":"service@orygend.com","telephone":"+91-9037442077","areaServed":"IN","description":"{description}"}}</script>'''
+                  html = html.replace('</head>', schema + '\n</head>', 1)
+
+              path.write_text(html, encoding='utf-8')
+          PY
+
+      - name: Commit SEO changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add '*.html'
+          if git diff --cached --quiet; then
+            echo "No SEO changes needed"
+          else
+            git commit -m "Improve SEO metadata and canonical URLs"
+            git push
+          fi
