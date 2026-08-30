@@ -85,6 +85,10 @@ footer{padding:3.5rem 0 6rem;background:var(--surface);border-top:1px solid var(
 .navbar .nav-link.active::after{content:'';position:absolute;left:50%;bottom:3px;width:18px;height:2px;transform:translateX(-50%);background:var(--amber);border-radius:2px;}
 @media(max-width:991.98px){.navbar .nav-link{margin:.12rem 0;}.navbar .nav-link.active::after{left:.75rem;transform:none;width:18px;}}
 </style>
+<style id="active-nav-v2">
+.navbar .nav-link.active{background:var(--navy) !important;color:#fff !important;border-radius:6px !important;font-weight:700 !important;}
+.navbar .nav-link.active:hover{background:var(--navy-2) !important;color:#fff !important;}
+</style>
 </head>
 <body>
 <div class="info-bar"><div class="container d-flex justify-content-center justify-content-md-between flex-wrap"><div class="d-none d-md-block">Bangalore, Karnataka &middot; Main service unit &middot; Pan-India courier support</div><div><a href="mailto:service@orygend.com">service@orygend.com</a><span class="sep">|</span><a href="tel:+919037442077">9037442077</a></div></div></div>
@@ -105,6 +109,19 @@ document.addEventListener('DOMContentLoaded', function () {
       link.classList.add('active');
       link.setAttribute('aria-current', 'page');
     }
+  });
+});
+</script>
+<script id="active-nav-script-v2">
+document.addEventListener('DOMContentLoaded', function(){
+  var page=(location.pathname.split('/').pop()||'index.html').toLowerCase();
+  if(page==='') page='index.html';
+  document.querySelectorAll('.navbar .nav-link').forEach(function(a){
+    var h=(a.getAttribute('href')||'').split('#')[0].split('?')[0];
+    var target=(h.split('/').pop()||'index.html').toLowerCase();
+    if(target==='') target='index.html';
+    if(target===page){a.classList.add('active');a.setAttribute('aria-current','page');}
+    else {a.classList.remove('active');a.removeAttribute('aria-current');}
   });
 });
 </script>
