@@ -1,0 +1,82 @@
+name: Set Orygend pre-launch messaging
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  prelaunch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out site
+        uses: actions/checkout@v4
+
+      - name: Apply pre-launch messaging
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          import re
+
+          files = list(Path('.').glob('*.html'))
+
+          replacements = {
+              'Now accepting service requests': 'Launching soon',
+              'Request a Service': 'Register Your Interest',
+              'Get a Free Quote': 'Register Your Interest',
+              'For urgent breakdowns, call 9037442077 or email service@orygend.com.': 'Service operations are launching soon. Register your interest to receive launch updates and priority support information.',
+              'call 9037442077': 'contact us',
+              'service request is received': 'your enquiry is received',
+              'service requests': 'service enquiries',
+              'breakdown call support': 'planned breakdown support',
+              'Breakdown Call Support': 'Planned Breakdown Support',
+              'Breakdown support': 'Planned Breakdown Support',
+              'breakdown support': 'planned breakdown support',
+              'Preventive Maintenance': 'Planned Preventive Maintenance',
+              'preventive maintenance': 'planned preventive maintenance',
+              'AMC / CMC': 'AMC / CMC — launching soon',
+              'AMC/CMC': 'AMC/CMC — launching soon',
+              'Board-Level Servicing': 'Planned Board-Level Repair',
+              'Board-level servicing': 'Planned Board-Level Repair',
+              'board-level repair': 'planned board-level repair',
+              'Board Repair': 'Board Repair — Launching Soon',
+          }
+
+          for path in files:
+              text = path.read_text(encoding='utf-8')
+              original = text
+              for old, new in replacements.items():
+                  text = text.replace(old, new)
+
+              # Add a consistent pre-launch notice directly below the info bar when one exists.
+              if 'prelaunch-notice' not in text and '<div class="info-bar">' in text:
+                  marker = '</div>\n<nav class="navbar'
+                  notice = '''</div>\n<div class="prelaunch-notice" role="status"><div class="container"><span class="prelaunch-dot"></span><strong>Orygend Healthcare is launching soon.</strong> Register your interest for launch updates and priority support information.</div></div>\n<nav class="navbar'''
+                  text = text.replace(marker, notice, 1)
+
+              # Add shared pre-launch styling once per page.
+              if 'prelaunch-notice{' not in text:
+                  css = '''\n<style>\n.prelaunch-notice{background:#f7f0e7;border-bottom:1px solid #ead9c3;color:#30373b;font-size:.84rem;padding:.7rem 0}.prelaunch-notice .container{display:flex;align-items:center;justify-content:center;gap:.55rem;text-align:center}.prelaunch-dot{width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:#be8337;display:inline-block}.prelaunch-notice strong{color:#1e2428}@media(max-width:575.98px){.prelaunch-notice{font-size:.78rem}.prelaunch-notice .container{padding-left:1rem;padding-right:1rem}}\n</style>\n'''
+                  text = text.replace('</head>', css + '</head>', 1)
+
+              # Make the homepage's primary hero/CTA language clearly pre-launch if the page has a hero.
+              if path.name == 'index.html':
+                  text = re.sub(r'(<h1[^>]*>)(.*?)(</h1>)', lambda m: m.group(1) + re.sub(r'\s*\|?\s*Biomedical Equipment Service[^<]*', '', m.group(2), flags=re.I) + m.group(3), text, count=1, flags=re.S)
+
+              if text != original:
+                  path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Commit pre-launch changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add '*.html'
+          if git diff --cached --quiet; then
+            echo "No pre-launch changes needed"
+          else
+            git commit -m "Position site as professional pre-launch experience"
+            git push
+          fi
