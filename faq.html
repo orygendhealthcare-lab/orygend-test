@@ -28,6 +28,10 @@ footer{padding:3.5rem 0 6rem;background:var(--surface);border-top:1px solid var(
 <meta name="twitter:title" content="FAQ | Biomedical Equipment Service | Orygend Healthcare">
 <meta name="twitter:description" content="Answers about biomedical equipment AMC/CMC, preventive maintenance, breakdown support, board-level repair, response times and supported brands.">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Orygend Healthcare","url":"https://orygend.com/","email":"service@orygend.com","telephone":"+91-9037442077","areaServed":"IN","description":"Answers about biomedical equipment AMC/CMC, preventive maintenance, breakdown support, board-level repair, response times and supported brands."}</script>
+<style id="active-nav-v2">
+.navbar .nav-link.active{background:var(--navy) !important;color:#fff !important;border-radius:6px !important;font-weight:700 !important;}
+.navbar .nav-link.active:hover{background:var(--navy-2) !important;color:#fff !important;}
+</style>
 </head>
 <body>
 <div class="info-bar"><div class="container d-flex justify-content-center justify-content-md-between flex-wrap"><div class="d-none d-md-block">Bangalore, Karnataka &middot; Main service unit &middot; Pan-India courier support</div><div><a href="mailto:service@orygend.com">service@orygend.com</a><span class="sep">|</span><a href="tel:+919037442077">9037442077</a></div></div></div>
@@ -42,4 +46,17 @@ footer{padding:3.5rem 0 6rem;background:var(--surface);border-top:1px solid var(
 <footer><div class="container"><div class="row gy-4 pb-4 mb-4" style="border-bottom:1px solid var(--border);"><div class="col-md-4"><div class="navbar-brand d-block mb-2">ORYGEND <span>HEALTHCARE</span></div><p class="text-muted-c small" style="max-width:280px;">Preventive maintenance, AMC/CMC, breakdown support, board-level repair and training for diagnostic and imaging equipment.</p></div><div class="col-6 col-md-2"><h6>Navigation</h6><ul><li><a href="services.html">Services</a></li><li><a href="equipment.html">Equipment</a></li><li><a href="coverage.html">Coverage</a></li><li><a href="faq.html">FAQ</a></li></ul></div><div class="col-6 col-md-3"><h6>Services</h6><ul><li>Preventive Maintenance</li><li>AMC / CMC</li><li>Breakdown Call Support</li><li>Board-Level Servicing</li><li>Training</li></ul></div><div class="col-6 col-md-3"><h6>Contact</h6><ul><li>Bangalore, Karnataka · Main service unit</li><li><a href="mailto:service@orygend.com">service@orygend.com</a></li><li>9037442077</li></ul></div></div><div class="d-flex justify-content-between flex-wrap gap-2 small text-muted-c"><span>&copy; Orygend Healthcare. All rights reserved.</span></div></div></footer>
 <a href="https://wa.me/919037442077" class="float-whatsapp" aria-label="Chat on WhatsApp" title="Chat on WhatsApp"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M16.001 3C9.373 3 4 8.373 4 15c0 2.386.7 4.607 1.907 6.473L4 29l7.72-1.867A11.94 11.94 0 0 0 16.001 27C22.628 27 28 21.627 28 15S22.628 3 16.001 3zm0 21.818a9.78 9.78 0 0 1-4.99-1.365l-.358-.213-4.583 1.108 1.127-4.47-.234-.367A9.77 9.77 0 0 1 5.909 15c0-5.57 4.522-10.09 10.092-10.09S26.093 9.43 26.093 15 21.572 24.818 16.001 24.818zm5.55-7.55c-.304-.152-1.797-.887-2.076-.988-.279-.101-.482-.152-.685.152-.203.304-.786.988-.964 1.19-.177.203-.355.228-.658.076-.304-.152-1.283-.473-2.444-1.51-.903-.806-1.513-1.8-1.69-2.104-.178-.304-.019-.468.133-.62.137-.136.304-.355.456-.532.152-.178.203-.304.304-.507.101-.203.05-.38-.025-.532-.076-.152-.685-1.652-.939-2.263-.247-.594-.499-.514-.685-.524-.177-.009-.38-.011-.583-.011-.203 0-.532.076-.81.38-.279.304-1.064 1.04-1.064 2.54 0 1.5 1.09 2.948 1.242 3.15.152.203 2.146 3.277 5.2 4.594.727.314 1.294.501 1.737.641.729.232 1.393.199 1.918.121.585-.087 1.797-.735 2.05-1.444.254-.71.254-1.317.178-1.444-.076-.127-.279-.203-.583-.355z"/></svg></a>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script id="active-nav-script-v2">
+document.addEventListener('DOMContentLoaded', function(){
+  var page=(location.pathname.split('/').pop()||'index.html').toLowerCase();
+  if(page==='') page='index.html';
+  document.querySelectorAll('.navbar .nav-link').forEach(function(a){
+    var h=(a.getAttribute('href')||'').split('#')[0].split('?')[0];
+    var target=(h.split('/').pop()||'index.html').toLowerCase();
+    if(target==='') target='index.html';
+    if(target===page){a.classList.add('active');a.setAttribute('aria-current','page');}
+    else {a.classList.remove('active');a.removeAttribute('aria-current');}
+  });
+});
+</script>
 </body></html>
