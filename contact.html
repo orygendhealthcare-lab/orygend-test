@@ -266,11 +266,12 @@
         </div>
       </div>
       <div class="col-lg-7">
-        <form action="https://formsubmit.co/service@orygend.com" method="POST" accept-charset="UTF-8">
-          <input type="hidden" name="_subject" value="New website quote request — Orygend Healthcare">
-          <input type="hidden" name="_template" value="table">
-          <input type="hidden" name="_captcha" value="true">
-          <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px">
+        <form action="https://api.web3forms.com/submit" method="POST" accept-charset="UTF-8">
+          <input type="hidden" name="access_key" value="52aa0579-3409-4630-9cdd-196d5f641e5b">
+          <input type="hidden" name="subject" value="New website quote request — Orygend Healthcare">
+          <input type="hidden" name="from_name" value="Orygend Healthcare Website">
+          <input type="hidden" name="redirect" value="https://orygend.com/contact.html?quote=success">
+          <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none">
           <div class="row g-3">
             <div class="col-md-6">
               <label class="form-label-c" for="quote-name">Your name *</label>
@@ -391,6 +392,24 @@ document.addEventListener('DOMContentLoaded', function () {
       link.setAttribute('aria-current', 'page');
     }
   });
+});
+</script>
+<script id="quote-success-message">
+document.addEventListener('DOMContentLoaded', function () {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('quote') === 'success') {
+    const form = document.querySelector('.quote-section form');
+    if (form) {
+      const notice = document.createElement('div');
+      notice.className = 'alert alert-success mb-4';
+      notice.setAttribute('role', 'status');
+      notice.textContent = 'Thank you. Your quote request has been submitted successfully. Our service team will contact you soon.';
+      form.parentNode.insertBefore(notice, form);
+    }
+    params.delete('quote');
+    const cleanUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '') + window.location.hash;
+    window.history.replaceState({}, document.title, cleanUrl);
+  }
 });
 </script>
 </body>
