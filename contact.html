@@ -259,50 +259,55 @@
         </div>
       </div>
       <div class="col-lg-7">
-        <form>
+        <form action="https://formsubmit.co/service@orygend.com" method="POST" accept-charset="UTF-8">
+          <input type="hidden" name="_subject" value="New website quote request — Orygend Healthcare">
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_captcha" value="true">
+          <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px">
           <div class="row g-3">
             <div class="col-md-6">
-              <label class="form-label-c">Your name</label>
-              <input type="text" class="form-control form-control-c" placeholder="Full name">
+              <label class="form-label-c" for="quote-name">Your name *</label>
+              <input id="quote-name" name="Name" type="text" class="form-control form-control-c" placeholder="Full name" autocomplete="name" required maxlength="120">
             </div>
             <div class="col-md-6">
-              <label class="form-label-c">Hospital / clinic</label>
-              <input type="text" class="form-control form-control-c" placeholder="Facility name">
+              <label class="form-label-c" for="quote-facility">Hospital / clinic</label>
+              <input id="quote-facility" name="Hospital or clinic" type="text" class="form-control form-control-c" placeholder="Facility name" autocomplete="organization" maxlength="160">
             </div>
             <div class="col-md-6">
-              <label class="form-label-c">Phone</label>
-              <input type="tel" class="form-control form-control-c" placeholder="9037442077">
+              <label class="form-label-c" for="quote-phone">Phone *</label>
+              <input id="quote-phone" name="Phone" type="tel" class="form-control form-control-c" placeholder="Your contact number" autocomplete="tel" required maxlength="30">
             </div>
             <div class="col-md-6">
-              <label class="form-label-c">Email</label>
-              <input type="email" class="form-control form-control-c" placeholder="you@hospital.com">
+              <label class="form-label-c" for="quote-email">Email *</label>
+              <input id="quote-email" name="email" type="email" class="form-control form-control-c" placeholder="you@hospital.com" autocomplete="email" required maxlength="254">
             </div>
             <div class="col-md-6">
-              <label class="form-label-c">Service needed</label>
-              <select class="form-control form-control-c">
+              <label class="form-label-c" for="quote-service">Service needed</label>
+              <select id="quote-service" name="Service needed" class="form-control form-control-c">
                 <option>Preventive Maintenance (PM)</option>
                 <option>AMC</option>
                 <option>CMC</option>
                 <option>Breakdown call</option>
                 <option>Board-level repair</option>
                 <option>Training</option>
+                <option>Other / not sure</option>
               </select>
             </div>
             <div class="col-md-6">
-              <label class="form-label-c">How urgent is this?</label>
-              <select class="form-control form-control-c">
-                <option>Equipment is down now &mdash; urgent</option>
+              <label class="form-label-c" for="quote-urgency">How urgent is this?</label>
+              <select id="quote-urgency" name="Urgency" class="form-control form-control-c">
+                <option>Equipment is down now — urgent</option>
                 <option>Needed within the week</option>
                 <option>Just exploring options</option>
               </select>
             </div>
             <div class="col-12">
-              <label class="form-label-c">Describe the fault or requirement</label>
-              <textarea class="form-control form-control-c" rows="4" placeholder="Equipment make/model and what's happening"></textarea>
+              <label class="form-label-c" for="quote-details">Describe the fault or requirement</label>
+              <textarea id="quote-details" name="Fault or requirement" class="form-control form-control-c" rows="4" placeholder="Equipment name, make/model, serial number (if available), location and what's happening" maxlength="5000"></textarea>
             </div>
             <div class="col-12">
               <button type="submit" class="btn btn-amber px-4 py-2">Request Free Quote</button>
-              <p class="form-note mb-0">Your request will be reviewed by the service team. For urgent equipment downtime, call or WhatsApp 9037442077 directly.</p>
+              <p class="form-note mb-0">Your request will be sent to our service team by email. For urgent equipment downtime, call or WhatsApp 9037442077 directly. Please do not include patient-identifiable or other sensitive medical information.</p>
             </div>
           </div>
         </form>
